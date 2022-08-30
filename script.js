@@ -80,7 +80,7 @@ function mostrarOperaciones(operaciones, gridOperaciones){
     gridOperaciones.innerHTML = "";
 
     codigoHTMLTabla = `
-    <table class="table table-hover">
+    <table class="table table-hover animate__animated animate__fadeIn">
         <thead>
             <tr>
                 <th scope="col"> # </th>
@@ -203,7 +203,7 @@ function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
 
     arrayObject.forEach((operacion, indice) => {
         divContenedor.innerHTML += `  
-            <div class="card bg-light border-light" id="operacion${indice}">
+            <div class="card bg-light border-light animate__animated animate__fadeIn" id="operacion${indice}">
                 <div class="card-header">${indice + 1}. ${operacion.par}</div>
                 <div class="card-body" id="card-operacion">
                     <p class="card-text"> <span class="itemInfo"> Tipo operación:  </span> ${operacion.tipoOperacion}  </p>
@@ -273,7 +273,7 @@ function eliminarOperacion(elementoDOM, indice, arrayObject){
     document.getElementById(elementoDOM).remove();
 
     arrayObject.splice(indice, 1);
-    
+
     almacenarLocalStorage("operacionesIniciales", arrayObject);
 }
 
