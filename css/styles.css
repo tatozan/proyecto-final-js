@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+:root{
+--bs-accordion-active-bg: rgb(182, 212, 62);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+.mainContainer{
+    margin-top: 5%;
+    margin-bottom: 2%;
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    flex-direction: row;
+}
+
+h2{
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+
+.accordion-item{
+    border: none;
+}
+
+.btn{
+    border: none;
+}
+
+.btn-primary{
+   --bs-btn-focus-shadow-rgb: 255,255,255;
+}
+.card-header{
+    font-weight: 600;
+}
+
+#botonCalcular{
+    width: 79%;
+    margin: 0.5rem 1rem;
+    background-color: #6c757d;
+}
+
+#botonReset{
+    width: 15%;
+    margin: 0.5rem 0.5rem;
+    background-color: #6c757d;
+}
+
+#idBtnDropDown{
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    background-color: #6c757d;
+}
+
+p{
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif; 
+}
+
+.btn-success{
+    background: #bdbdbd;
+    --bs-btn-hover-bg: #46f687;
+}
+
+.btn-danger{
+    background: #bdbdbd;
+    --bs-btn-hover-bg: #f6465d;
+}
+
+.contenedorHistorialOperaciones{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 5%;
+    /*display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;*/
+    display: grid;
+    gap: 2rem;
+    grid-auto-rows: 22rem;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.card{
+    line-height: 1.8rem;
+}
+
+.itemInfo{
+    color: rgb(52, 58, 64);
+    font-weight: 600;
+}
+
+.accordion-button:not(.collapsed){
+    color: black;
+}
+/*.accordion-button:not(.collapsed){
+    background-color: #b1fbcc;
+}*/
