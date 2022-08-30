@@ -1,68 +1,8 @@
-/*
-variables:
-//visibles en calculadora
--tipo de operacion: short o long (tipoOperacion)
--% recompra/reventa: porcentaje de recompra-distancia (distanciaRecompra)
--% monedas: porcentaje de aumento por cada recompra (montoPorRecompra)
--$ stop loss: sl en usdt (slUSDT)
--$ precio de entrada: precio de compra de la moneda, en usdt (precioMoneda)
--cantidad de monedas: cantidad de monedas en la primera compra (cantidadMonedasPrimeraCompra)
-
-//no visibles
--cantidad de usdt invertidos en primera compra (montoInvertido)
-
-*/
-
-/*
-proceso
-
-1. voy a entrar a una moneda con 5 usdt (montoInvertido)
-2. Cotizacion moneda al momento de comprarla (precioMoneda)
-3. Cantidad de monedas en la primera compra:
-    montoInvertido / precioMoneda = cantidadMonedasPrimeraCompra
-4. Calculo de las recompras:
-
-*/
-
-/*function redondear(numero, numeroDecimales){
-    if (typeof numero != 'number' || typeof numeroDecimales != 'number'){
-        return null;
-    }
-
-    let signo = numero >= 0? 1 : -1;
-
-    return (Math.round((numero * Math.pow(10, numeroDecimales)) + (signo * 0.0001)) / Math.pow(10, numeroDecimales)).toFixed(numeroDecimales);
-}
-*/
-
-//const coloresSitio = [{gris_claro: "#f4f4f4"}, {verde_claro: "#46f687"}, {rojo_claro: "#f6465d"}];
-
 //activo popovers en todo el documento
 let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
   return new bootstrap.Popover(popoverTriggerEl);
 });
-
-//obtengo las monedas de la api de futuros de Binance
-const obtenerMonedas = async() => {
-    try{
-        const respuesta = await axios.get("https://www.binance.com/fapi/v1/exchangeInfo");
-
-        par.innerHTML = "";
-
-        par.innerHTML += `
-            <option selected disabled value=""> SELECT </option>
-        `
-        respuesta.data.symbols.forEach((moneda) => {
-            par.innerHTML += `
-                <option value="${moneda.pair}">${moneda.pair}</option>
-            `
-        });
-    }
-    catch(error){
-        console.log(error);
-    }
-}
 
 //declaro objeto operacion
 class Operacion{
@@ -108,55 +48,32 @@ class Operacion{
             </div>
         `;
     }
-
-    /*mostrarDatosOperacionInicial(){
-        const divDatosCompraInicial = document.getElementById('divDatosCompraInicial');
-        divDatosCompraInicial.style.border = "1px solid #ddd";
-        divDatosCompraInicial.innerHTML = "";
-
-        divDatosCompraInicial.innerHTML += `
-            
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    Datos Operación Inicial
-                </button>
-            </h2>
-
-            <div id="collapseTwo" class="accordion-collapse collapse collapse" aria-labelledby="headingTwo" style="">
-                <div class="accordion-body">
-                        <p> Moneda: ${this.par} </p>
-                        <p> Precio de compra: $${this.precioMoneda.toFixed(3)} </p>
-                        <p> Monto invertido en dólares: $${this.montoInvertido.toFixed(3)} </p>
-                        <p> Tamaño compra: ${this.cantidadMonedas.toFixed(2)} monedas </p>
-                        <p> Tipo de operación: ${this.tipoOperacion} </p>
-                </div>
-            </div>
-        `;
-    }*/
-
 }
 
 
 /*-------------------------------------------FUNCIONES-------------------------------------------*/
-/*
-//Funcion asincrona que crea elemento del dom para mostrar todas las monedas almacenadas en un archivo json
-async function mostrarMonedas(){
-    const monedas = await fetch("./json/monedas.json");
-    const monedasParseadas = await monedas.json();
 
-    par.innerHTML = "";
+//obtengo las monedas de la api de futuros de Binance
+const obtenerMonedas = async() => {
+    try{
+        const respuesta = await axios.get("https://www.binance.com/fapi/v1/exchangeInfo");
 
-    par.innerHTML += `
-        <option selected disabled value=""> SELECT </option>
-    `
-    monedasParseadas.forEach((moneda) => {
+        par.innerHTML = "";
+
         par.innerHTML += `
-        <option value="${moneda.symbol}">${moneda.symbol}</option>
-
+            <option selected disabled value=""> SELECT </option>
         `
-    });
-}
-*/
+        respuesta.data.symbols.forEach((moneda) => {
+            par.innerHTML += `
+                <option value="${moneda.pair}">${moneda.pair}</option>
+            `
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+} 
+
 //Mostrar operaciones de recompra / reventa
 function mostrarOperaciones(operaciones, gridOperaciones){
     let codigoHTMLTabla;
@@ -207,45 +124,6 @@ function mostrarOperaciones(operaciones, gridOperaciones){
         </table>
     `
     gridOperaciones.innerHTML = codigoHTMLTabla;
-
-/*
-    gridOperaciones.innerHTML += `
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col"> # </th>
-                <th scope="col"> PRECIO </th>
-                <th scope="col"> MONEDA </th>
-                <th scope="col"> USDT </th>
-            </tr>
-        </thead>
-        <tbody>
-    `
-
-    operaciones.forEach((operacion, indice) => {
-
-        //no muestro operacion inicial, solo las recompras / reventas que es lo que me interesa para operar
-        if(indice != 0){
-            gridOperaciones.innerHTML += `
-            <tr class="table-secondary">
-                <th scope="row"> ${operacion.numeroOperacion} </th>
-                <td>$${operacion.precioMoneda.toFixed(3)}</td>
-                <td>${operacion.cantidadMonedas.toFixed(3)}</td>
-                <td>$${operacion.montoInvertido.toFixed(2)}</td>
-            </tr>  
-          `    
-        }
-
-
-    });
-
-
-    gridOperaciones.innerHTML += `
-            </tbody>
-        </table>
-    `
-
-*/
 }
 
 //Calcular PnL de operaciones, ya sea de short o long
@@ -316,11 +194,9 @@ function calcularPorcentajeDistanciaSl(precioMonedaEnSl, precioMoneda, tipoOpera
     } else if(tipoOperacion === "long"){
         porcentajeDistancia = ((precioMoneda - precioMonedaEnSl) / precioMoneda) * 100;
     }
-
-    return porcentajeDistancia;
-    
+    return porcentajeDistancia; 
 }
-//style="max-width: 20rem; ;"
+
 //Crear HTML de historial de operaciones, dado un div contenedor, y el array de objetos a mostrar
 function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
     divContenedor.innerHTML = "";
@@ -377,31 +253,6 @@ function mostrarDatosFinales(porcentajeDistanciaSl, precioMonedaEnSl, cantidadMo
     `
 }
 
-/*
-
-//Crea un acordion con datos adicionales al calculo de las operaciones
-function mostrarDatosFinales(porcentajeDistanciaSl, precioMonedaEnSl, cantidadMonedas, montoInvertido){
-    const divDatosFinales = document.getElementById('divDatosFinales');
-    divDatosFinales.style.border = "1px solid #ddd";
-    divDatosFinales.innerHTML = "";
-
-    divDatosFinales.innerHTML += `
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Datos Adicionales
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" style="">
-            <div class="accordion-body">
-                <p> <strong> SL(${porcentajeDistanciaSl.toFixed(2)}%) </strong> </p>
-                <p> Precio moneda al tocar SL: <strong> $${precioMonedaEnSl.toFixed(3)} </strong> </p>
-                <p> Cantidad de monedas compradas utilizando todas las recompras: <strong> ${cantidadMonedas.toFixed(3)} </strong></p>
-                <p> Monto total invertido utilizando todas las recompras: <strong> $${montoInvertido.toFixed(3)} </strong></p>
-            </div>
-        </div>
-    `
-}
-*/
 //Cambia el color del boton CALCULAR dependiendo del tipo de operacion
 function cambiarColorBoton(tipoOperacion, boton){
     switch (tipoOperacion) {
@@ -417,15 +268,12 @@ function cambiarColorBoton(tipoOperacion, boton){
     }
 }
 
-//Elimina elemento del dom y de un array de objetos
+
 function eliminarOperacion(elementoDOM, indice, arrayObject){
-    //primero elimino elemento del dom
     document.getElementById(elementoDOM).remove();
 
-    //luego lo elimino del array de objetos
     arrayObject.splice(indice, 1);
-
-    //luego lo borro del localStorage
+    
     almacenarLocalStorage("operacionesIniciales", arrayObject);
 }
 
@@ -491,16 +339,14 @@ function crearCardsHistorialOperaciones(){
 const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
 const form = document.getElementById('idForm');
 const botonMostrarOperacionesIniciales = document.getElementById("idBtnDropDown");
-//const idOperacionesInicialesLista = document.getElementById("idOperacionesInicialesLista");
 const divOperacionesIniciales = document.getElementById("divOperacionesIniciales");
 const gridOperaciones = document.getElementById("gridOperaciones");
 const tipoOperacion = document.getElementById("tipoOperacion");
 const botonCalcular = document.getElementById("botonCalcular");
 const botonReset = document.getElementById("botonReset");
 
-//muestro las monedas de futuros de Binance
+//obtengo listado de monedas de binance
 obtenerMonedas();
-
 
 //Historial de operaciones iniciales
 let primerClick = true;
@@ -534,9 +380,9 @@ form.addEventListener("submit", (event) => {
 
     let tipoOperacion, par, distanciaPorcentajeRecompraReventa, aumentoPorcentajeRecompraReventa, sl, precioMoneda, cantidadMonedas;
 
-    //metodo de js que extrae la informacion de los campos de un formulario objetivo
+
     let dataForm = new FormData(event.target);
-    //hago este paso para que sea mas legible pero podria directamente crear el objeto con los datos que vengan del objeto dataForm
+
     tipoOperacion = dataForm.get("operacion");
     par = dataForm.get("parName");
     distanciaPorcentajeRecompraReventa = parseFloat(dataForm.get("distanciaPorcentajeRecompraReventaName"));
@@ -548,18 +394,6 @@ form.addEventListener("submit", (event) => {
 
     if((distanciaPorcentajeRecompraReventa && aumentoPorcentajeRecompraReventa && sl && precioMoneda && cantidadMonedas) > 0){
 
-        //almaceno el valor de los input del html en variables let
-        /*tipoOperacion = (document.getElementById('tipoOperacion').value);
-        par = (document.getElementById('par').value).toUpperCase();
-        distanciaPorcentajeRecompraReventa = parseFloat(document.getElementById('distanciaPorcentajeRecompraReventa').value);
-        aumentoPorcentajeRecompraReventa = parseFloat(document.getElementById('aumentoPorcentajeRecompraReventa').value);
-        sl = parseFloat(document.getElementById('sl').value);
-        precioMoneda = parseFloat(document.getElementById('precioMoneda').value);
-
-        cantidadMonedas = parseFloat(document.getElementById('cantidadMonedas').value);*/
-
-        //compruebo si mi localStorage hay almacenadas operaciones, sino creo una nueva
-        //la coloco aqui tambien porque si...
         const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
 
         //contiene las operaciones, de recompra o reventa, incluida compra/venta incial
@@ -580,8 +414,6 @@ form.addEventListener("submit", (event) => {
         const operacion0 = new Operacion(0, tipoOperacion, par, distanciaPorcentajeRecompraReventa, aumentoPorcentajeRecompraReventa, sl, precioMoneda, cantidadMonedas, date);
         operaciones.push(operacion0);
         operaciones[0].calcularMontoInvertido(precioMoneda, cantidadMonedas);
-
-        //La calculadora no permite mas que calcular 8 recompras, mas recompras, no se recomienda
 
         let precioMonedaEnSl = 0;
         let porcentajeDistanciaSl = 0;
@@ -613,8 +445,6 @@ form.addEventListener("submit", (event) => {
                 } else {
                     nroOperacionProm = nroOperacionAnterior - 1;
                     pnl = calcularPnL(operacionesProm[nroOperacionProm].cantidadMonedas, operacionesProm[nroOperacionProm].precioMoneda, precioMoneda, operaciones[0].tipoOperacion);
-                    //pnl = operacionesProm[nroOperacionProm].cantidadMonedas * (precioMoneda - operacionesProm[nroOperacionProm].precioMoneda);
-
                 }
 
                 if(pnl <= operaciones[0].sl){
@@ -636,7 +466,7 @@ form.addEventListener("submit", (event) => {
                     const operacionProm = new Operacion(nroOperacion, operaciones[0].tipoOperacion, par, operaciones[0].distanciaPorcentajeRecompraReventa, operaciones[0].aumentoPorcentajeRecompraReventa, operaciones[0].sl, precioMonedaProm, cantidadMonedasProm, date, inversionProm);
                     operacionesProm.push(operacionProm);
                 }
-                      
+            //La calculadora no permite mas que calcular 8 recompras, mas recompras, no se recomienda          
             } while(pnl <= operaciones[0].sl && i < 8);      
             
             //Si i = 1 quiere decir que pnl excede el sl, por lo tanto no podemos hacer ni una recompra
@@ -649,10 +479,9 @@ form.addEventListener("submit", (event) => {
                   });
 
             } else {
-                //guardo datos de mis operaciones para localStorage
+
                 operacionesIniciales.push(operacion0);
             
-                //localStorage.setItem("operacionesIniciales", JSON.stringify(operacionesIniciales));
                 almacenarLocalStorage("operacionesIniciales", operacionesIniciales);
 
                 //extraigo la ultima operacion del arreglo
@@ -669,7 +498,7 @@ form.addEventListener("submit", (event) => {
                 operaciones[0].mostrarDatosOperacionInicial();
 
                 crearCardsHistorialOperaciones();
-                //reseteo el formulario
+
                 form.reset();
             }
         }
