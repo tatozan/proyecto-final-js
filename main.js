@@ -205,8 +205,6 @@ function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
 function crearCardsHistorialOperaciones(){
 
     const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
-    console.log("operacionesIniciales cuando creo las cards");
-    console.log(operacionesIniciales);
 
     crearHTMLHistorialOperaciones(divOperacionesIniciales, operacionesIniciales);
 
@@ -334,9 +332,6 @@ function cambiarColorBoton(tipoOperacion, boton){
 
 //obtencion elementos del dom
 const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
-
-console.log("operaciones iniciales en el hilo principal");
-console.log(operacionesIniciales);
 
 const form = document.getElementById('idForm');
 const botonMostrarOperacionesIniciales = document.getElementById("idBtnDropDown");

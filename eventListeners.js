@@ -100,7 +100,7 @@ form.addEventListener("submit", (event) => {
             //La calculadora no permite mas que calcular 8 recompras, mas recompras, no se recomienda          
             } while(pnl <= operaciones[0].sl && i < 8);      
             
-            //Si i = 1 quiere decir que pnl excede el sl, por lo tanto no podemos hacer ni una recompra
+            //Si i = 1 quiere decir que pnl excede el sl, por lo tanto no podemos hacer ninguna recompra
             if(i === 1){
                 Swal.fire({
                     icon: 'error',
