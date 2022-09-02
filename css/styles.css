@@ -80,18 +80,10 @@ p{
     margin-left: 10%;
     margin-right: 10%;
     margin-bottom: 5%;
-    /*display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;*/
     display: grid;
     gap: 2rem;
     grid-auto-rows: 22rem;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-}
-
-.card{
-    line-height: 1.8rem;
 }
 
 .itemInfo{
@@ -102,6 +94,23 @@ p{
 .accordion-button:not(.collapsed){
     color: black;
 }
-/*.accordion-button:not(.collapsed){
-    background-color: #b1fbcc;
-}*/
+
+.card{
+    line-height: 1.8rem;
+}
+
+.card-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+}
+
+#botonEliminarOperacion{
+    visibility: hidden;
+    background: #6c757d;
+}
+
+#botonDeseleccionarOperacion{
+    background: #6c757d;
+    visibility: hidden;
+}
