@@ -191,6 +191,9 @@ botonMostrarOperacionesIniciales.addEventListener("click", () => {
     }
 });
 
+
+/********************************************************************************************************/
+//Boton que permite deseleccionar las operaciones que haya tildado previamente
 botonDeseleccionarOperacion.addEventListener("click", () => {
     listaEliminar.forEach(indice => {
         let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;

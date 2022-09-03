@@ -244,6 +244,10 @@ function crearCardsHistorialOperaciones(){
                 if (result.isConfirmed) {
                     eliminarOperacion(`operacion${indice}`, indice, operacionesIniciales);
 
+                    botonDeseleccionarOperacion.style.visibility = "hidden";
+                    botonEliminarOperacion.style.visibility = "hidden";
+                    listaEliminar = [];
+                    
                     crearCardsHistorialOperaciones();
                     Swal.fire({
                         title: 'Borrada!',
