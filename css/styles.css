@@ -43,7 +43,7 @@ h2{
 }
 
 #botonCalcular{
-    width: 79%;
+    width: 78%;
     margin: 0.5rem 1rem;
     background-color: #6c757d;
 }
@@ -105,12 +105,27 @@ p{
     align-items: right;
 }
 
-#botonEliminarOperacion{
-    visibility: hidden;
+#botonEliminarOperacion{ 
     background: #6c757d;
+    visibility: hidden;
+    width: 4rem;
+    text-align: center;
 }
 
 #botonDeseleccionarOperacion{
     background: #6c757d;
+    visibility: hidden;
+    width: 4rem;
+    text-align: center;
+}
+
+#botonSeleccionarOperacion{
+    background: #6c757d;
+    visibility: hidden;
+    width: 4rem;
+    text-align: center;
+}
+
+.checkBoxs{
     visibility: hidden;
 }

@@ -2,7 +2,16 @@
 /********************************************************************************************************/
 //Se ejecuta al tocar el boton CALCULAR, es el evento principal del proyecto
 form.addEventListener("submit", (event) => {
+    event.stopImmediatePropagation();
     event.preventDefault();
+
+    if(modoSeleccion === true){
+        modoSeleccion = false;
+        seleccionarOperacion("deseleccionar");    
+        botonEliminarOperacion.style.visibility = "hidden";
+        botonDeseleccionarOperacion.style.visibility = "hidden";
+        botonSeleccionarOperacion.style.visibility = "hidden";
+    }
 
     let uuid, tipoOperacion, par, distanciaPorcentajeRecompraReventa, aumentoPorcentajeRecompraReventa, sl, precioMoneda, cantidadMonedas;
 
@@ -139,14 +148,16 @@ form.addEventListener("submit", (event) => {
 
 /********************************************************************************************************/
 //Evento que cambia el color del boton CALCULAR segun vaya a short o long
-tipoOperacion.addEventListener("click", () => {
+tipoOperacion.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
     cambiarColorBoton(tipoOperacion.value, botonCalcular);
 });
 
 
 /********************************************************************************************************/
 //Cada vez que doy al boton reset, se cambia el color del boton calcular por defecto
-botonReset.addEventListener("click", () => {
+botonReset.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
     tipoOperacion.value="";
     cambiarColorBoton(tipoOperacion.value, botonCalcular);
 
@@ -155,30 +166,62 @@ botonReset.addEventListener("click", () => {
 
 /********************************************************************************************************/
 //Elimino del dom, array y localStorage las operaciones que selecciono con checkboxs
-botonEliminarOperacion.addEventListener("click", () => {
+botonEliminarOperacion.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
     const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
 
-    listaEliminar.forEach((operacion, indice) => {
-        document.getElementById(`operacion${indice}`).remove();
+    Swal.fire({
+        title: 'Desea eliminar las operaciones?',
+        text: "Luego, no será capaz de recuperarlas!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#5fb6ff',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ok'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            listaEliminar.forEach((operacion, indice) => {
+                document.getElementById(`operacion${indice}`).remove();
+            });
+
+            const operacionesFiltradas = operacionesIniciales.filter( (operacion, indice) => !listaEliminar.includes(indice.toString()));
+
+            almacenarLocalStorage("operacionesIniciales", operacionesFiltradas);
+
+            botonEliminarOperacion.style.visibility = "hidden";
+            botonDeseleccionarOperacion.style.visibility = "hidden";
+            botonSeleccionarOperacion.style.visibility = "hidden";
+            
+            listaEliminar = [];
+
+            crearCardsHistorialOperaciones();
+
+            Swal.fire({
+                title: 'Borradas!',
+                text:"Las operaciones han sido eliminadas.",
+                icon: 'success',
+                confirmButtonColor: '#5fb6ff',
+                confirmButtonText: 'Ok'
+            });
+        }
     });
 
-    const operacionesFiltradas = operacionesIniciales.filter( (operacion, indice) => !listaEliminar.includes(indice.toString()));
-
-    almacenarLocalStorage("operacionesIniciales", operacionesFiltradas);
-
-    botonEliminarOperacion.style.visibility = "hidden";
-    botonDeseleccionarOperacion.style.visibility = "hidden";
-    
-    listaEliminar = [];
-
-    crearCardsHistorialOperaciones();
+    modoSeleccion = false;
 });
-
 
 /********************************************************************************************************/
 //Muestra historial de operaciones al presionar boton Historial operaciones
 let primerClick = true;
-botonMostrarOperacionesIniciales.addEventListener("click", () => {
+botonMostrarOperacionesIniciales.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
+    if(modoSeleccion === true){
+        modoSeleccion = false;
+        seleccionarOperacion("deseleccionar");
+        botonEliminarOperacion.style.visibility = "hidden";
+        botonDeseleccionarOperacion.style.visibility = "hidden";
+        botonSeleccionarOperacion.style.visibility = "hidden";
+    }
+
     if (primerClick == true){
         primerClick = false;
         botonMostrarOperacionesIniciales.style.background="#5fb6ff";
@@ -193,14 +236,41 @@ botonMostrarOperacionesIniciales.addEventListener("click", () => {
 
 
 /********************************************************************************************************/
-//Boton que permite deseleccionar las operaciones que haya tildado previamente
-botonDeseleccionarOperacion.addEventListener("click", () => {
-    listaEliminar.forEach(indice => {
-        let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;
-        checkBox.checked = false;
+//Boton que permite destildar todas las operaciones
+botonDeseleccionarOperacion.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
+    seleccionarOperacion("deseleccionar");
+});
+
+/********************************************************************************************************/
+//Boton que permite tildar todas las operaciones
+botonSeleccionarOperacion.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
+    seleccionarOperacion("seleccionar");
+});
+
+
+
+/********************************************************************************************************/
+//Cuando se clickea fuera, se sale del modo seleccion de cards
+divModoSeleccionOff.addEventListener("click", (event) => {
+
+    if (modoSeleccion === true){
+        checkBoxs.forEach((checkBox, indice) => {
+            checkBox.style.visibility = "hidden";
+            checkBox.checked = false;
+        });
+
         botonDeseleccionarOperacion.style.visibility = "hidden";
+        botonSeleccionarOperacion.style.visibility = "hidden";
         botonEliminarOperacion.style.visibility = "hidden";
-        listaEliminar = [];
-    });
+
+        modoSeleccion = false;
+    }
+});
+
+//solo evito que cuando de click en calcular no se active el evento click de divModoSeleccionOff
+botonCalcular.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
 });
 

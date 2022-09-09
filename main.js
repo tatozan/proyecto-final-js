@@ -39,7 +39,6 @@ class Operacion{
                     Datos Operación Inicial
                 </button>
             </h2>
-
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
                 <div class="accordion-body">
                         <p> <span class="itemInfo"> Moneda: </span>${this.par} </p>
@@ -173,7 +172,7 @@ function mostrarDatosFinales(porcentajeDistanciaSl, precioMonedaEnSl, cantidadMo
     `
 }
 
-
+//id="flexCheckDefault"
 /****************************************crearHTMLHistorialOperaciones*************************************/
 //Crear HTML de historial de operaciones, dado un div contenedor, y el array de objetos a mostrar
 function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
@@ -181,9 +180,9 @@ function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
 
     arrayObject.forEach((operacion, indice) => {
         divContenedor.innerHTML += `
-            <div class="card bg-light border-light animate__animated animate__fadeIn" id="operacion${indice}">
+            <div class="card bg-light border-light animate__animated animate__fadeIn" id="operacion${indice}" data-long-press-delay="500">
                 <div class="card-header">${indice + 1}. ${operacion.par}
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <input class="form-check-input checkBoxs" type="checkbox" value="">
                 </div>
                 <div class="card-body" id="card-operacion">
                     <p class="card-text"> <span class="itemInfo"> Tipo operación:  </span> ${operacion.tipoOperacion}  </p>
@@ -208,15 +207,19 @@ function crearCardsHistorialOperaciones(){
 
     crearHTMLHistorialOperaciones(divOperacionesIniciales, operacionesIniciales);
 
+    //Metodo que convierte un nodeList en array
+    checkBoxs = Array.from(document.querySelectorAll(".checkBoxs"));
+
+
     operacionesIniciales.forEach((operacion, indice) => {
 
         let operacionEliminar = document.getElementById(`operacion${indice}`).lastElementChild.children[5];
         let operacionInicialDatos = document.getElementById(`operacion${indice}`).lastElementChild.lastElementChild;
-        //let cardOperacion = document.getElementById(`operacion${indice}`);
+        let cardOperacion = document.getElementById(`operacion${indice}`);
         let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;
         //Boton cargar datos de operaciones
-        operacionInicialDatos.addEventListener("click", () => {
-
+        operacionInicialDatos.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
             cargarOperacionFormulario(
                 document.getElementById("tipoOperacion"), 
                 document.getElementById("par"), 
@@ -231,7 +234,9 @@ function crearCardsHistorialOperaciones(){
             cambiarColorBoton(tipoOperacion.value, botonCalcular);
         });
 
-        operacionEliminar.addEventListener("click", () => {
+        operacionEliminar.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
+
             Swal.fire({
                 title: 'Desea eliminar la operación?',
                 text: "Luego, no será capaz de recuperarla!",
@@ -245,6 +250,8 @@ function crearCardsHistorialOperaciones(){
                     eliminarOperacion(`operacion${indice}`, indice, operacionesIniciales);
 
                     botonDeseleccionarOperacion.style.visibility = "hidden";
+                    botonSeleccionarOperacion.style.visibility = "hidden";
+
                     botonEliminarOperacion.style.visibility = "hidden";
                     listaEliminar = [];
                     
@@ -260,8 +267,63 @@ function crearCardsHistorialOperaciones(){
             });
         });
 
-        checkBox.addEventListener("click", () => {
+        checkBox.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
+
             comprobarOperacionesAEliminar(checkBox, listaEliminar, indice);    
+        });
+
+        //activa modo seleccion de operaciones para eliminarlas
+        cardOperacion.addEventListener("long-press", (event) => {
+            event.stopImmediatePropagation();
+
+            modoSeleccion = true;
+
+            checkBoxs.forEach((checkBox, indice) => {
+                checkBox.style.visibility = "visible";
+                checkBox.checked = false;
+            });
+
+            if(listaEliminar.length == 0){
+                botonEliminarOperacion.style.visibility = "hidden";
+                botonDeseleccionarOperacion.style.visibility = "hidden";
+                botonSeleccionarOperacion.style.visibility = "visible";
+            } else if(listaEliminar.length > 0){
+                botonEliminarOperacion.style.visibility = "visible";
+                botonDeseleccionarOperacion.style.visibility = "visible";
+                botonSeleccionarOperacion.style.visibility = "visible";
+
+            }
+        });
+
+        cardOperacion.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
+
+            if(modoSeleccion === true){
+                if(checkBox.checked === false){
+                    checkBox.checked = true;
+                    botonEliminarOperacion.style.visibility = "visible";
+                    listaEliminar.push(`${indice}`);
+                } else if(checkBox.checked === true){
+                    checkBox.checked = false;
+                    
+                    let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
+                    //se compara con -1 porque es una condicion de error del metodo indexOf, por si no encuentra el elemento buscado
+                    if(indice != -1){ 
+                        listaEliminar.splice(indiceElementoAEliminar, 1);
+                    }
+                }
+            
+                if(listaEliminar.length == 0){
+                    botonEliminarOperacion.style.visibility = "hidden";
+                    botonDeseleccionarOperacion.style.visibility = "hidden";
+                    botonSeleccionarOperacion.style.visibility = "visible";
+                } else if(listaEliminar.length > 0){
+                    botonEliminarOperacion.style.visibility = "visible";
+                    botonDeseleccionarOperacion.style.visibility = "visible";
+                    botonSeleccionarOperacion.style.visibility = "visible";
+                }
+            }
         });
     });
 }
@@ -297,8 +359,10 @@ function comprobarOperacionesAEliminar(checkBox, listaEliminar, indice){
     if(listaEliminar.length == 0){
         botonEliminarOperacion.style.visibility = "hidden";
         botonDeseleccionarOperacion.style.visibility = "hidden";
-    }else if(listaEliminar.length > 0){
+        botonSeleccionarOperacion.style.visibility = "hidden";
+    } else if(listaEliminar.length > 0){
         botonDeseleccionarOperacion.style.visibility = "visible";
+        botonSeleccionarOperacion.style.visibility = "visible";
     }
 }
 
@@ -330,6 +394,31 @@ function cambiarColorBoton(tipoOperacion, boton){
     }
 }
 
+function seleccionarOperacion(modoBoton){
+
+    if(modoBoton === "seleccionar"){
+        checkBoxs.forEach((checkBox, indice) => {
+            //let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;
+
+            checkBox.checked = true;
+            
+            listaEliminar.push(`${indice}`);
+        });
+
+        botonEliminarOperacion.style.visibility = "visible";
+        botonDeseleccionarOperacion.style.visibility = "visible";
+
+    } else if(modoBoton === "deseleccionar"){
+        listaEliminar.forEach(indice => {
+            let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;
+            checkBox.checked = false;
+            listaEliminar = [];    
+        });
+
+        botonEliminarOperacion.style.visibility = "hidden";
+        botonDeseleccionarOperacion.style.visibility = "hidden";
+    }
+}
 
 
 /*-------------------------------------------CODIGO-------------------------------------------*/
@@ -346,14 +435,12 @@ const botonCalcular = document.getElementById("botonCalcular");
 const botonReset = document.getElementById("botonReset");
 const botonEliminarOperacion = document.getElementById("botonEliminarOperacion");
 const botonDeseleccionarOperacion = document.getElementById("botonDeseleccionarOperacion");
+const botonSeleccionarOperacion = document.getElementById("botonSeleccionarOperacion");
+const divModoSeleccionOff = document.getElementById("divModoSeleccionOff");
 
+let checkBoxs = [];
 let listaEliminar = [];
-
+let modoSeleccion = false;
+let modoBoton = false;
 //obtengo listado de monedas de Binance Futures
 obtenerListadoMonedas();
-
-
-
-
-/*let uuid = self.crypto.randomUUID();*/
-
