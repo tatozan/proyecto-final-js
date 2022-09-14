@@ -2,7 +2,7 @@
 
 
 :root{
---bs-accordion-active-bg: rgb(182, 212, 62);
+    --bs-accordion-active-bg: rgb(182, 212, 62);
 }
 
 * {
@@ -67,12 +67,12 @@ p{
 }
 
 .btn-success{
-    background: #bdbdbd;
+    background: #dddfe2;
     --bs-btn-hover-bg: #46f687;
 }
 
 .btn-danger{
-    background: #bdbdbd;
+    background: #dbdddf;
     --bs-btn-hover-bg: #f6465d;
 }
 
@@ -105,27 +105,39 @@ p{
     align-items: right;
 }
 
-#botonEliminarOperacion{ 
-    background: #6c757d;
+.checkBoxs{
     visibility: hidden;
-    width: 4rem;
-    text-align: center;
 }
 
 #botonDeseleccionarOperacion{
-    background: #6c757d;
-    visibility: hidden;
-    width: 4rem;
-    text-align: center;
+    padding-bottom: 1rem;
 }
 
 #botonSeleccionarOperacion{
-    background: #6c757d;
-    visibility: hidden;
-    width: 4rem;
-    text-align: center;
+    padding-bottom: 1rem;
 }
 
-.checkBoxs{
+#botonEliminarOperacion:disabled{
+    background-color: #dbdddf;
+}
+
+#botonDeseleccionarOperacion:disabled{
+    background-color: #dbdddf;
+}
+
+#botonSeleccionarOperacion:disabled{
+    background-color: #dbdddf;
+}
+
+.containerButtons{
+    display: flex;
+    justify-content: start;
+    gap: 1rem;
+}
+
+.botonesEdicion{
+    background: #a7a0ff;
     visibility: hidden;
+    width: 4rem;
+
 }

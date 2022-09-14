@@ -205,11 +205,20 @@ function crearCardsHistorialOperaciones(){
 
     const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
 
+    if(operacionesIniciales.length == 0){
+        
+        visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden");
+
+    } else if(operacionesIniciales.length > 0 ){
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
+    } 
+
+    selectorModoSeleccion("desactivar");
+
     crearHTMLHistorialOperaciones(divOperacionesIniciales, operacionesIniciales);
 
     //Metodo que convierte un nodeList en array
     checkBoxs = Array.from(document.querySelectorAll(".checkBoxs"));
-
 
     operacionesIniciales.forEach((operacion, indice) => {
 
@@ -249,13 +258,8 @@ function crearCardsHistorialOperaciones(){
                 if (result.isConfirmed) {
                     eliminarOperacion(`operacion${indice}`, indice, operacionesIniciales);
 
-                    botonDeseleccionarOperacion.style.visibility = "hidden";
-                    botonSeleccionarOperacion.style.visibility = "hidden";
-
-                    botonEliminarOperacion.style.visibility = "hidden";
                     listaEliminar = [];
-                    
-                    crearCardsHistorialOperaciones();
+
                     Swal.fire({
                         title: 'Borrada!',
                         text:"La operación ha sido eliminada.",
@@ -263,8 +267,10 @@ function crearCardsHistorialOperaciones(){
                         confirmButtonColor: '#5fb6ff',
                         confirmButtonText: 'Ok'
                     });
+
+                    crearCardsHistorialOperaciones();
                 }
-            });
+            });   
         });
 
         checkBox.addEventListener("click", (event) => {
@@ -277,23 +283,8 @@ function crearCardsHistorialOperaciones(){
         cardOperacion.addEventListener("long-press", (event) => {
             event.stopImmediatePropagation();
 
-            modoSeleccion = true;
-
-            checkBoxs.forEach((checkBox, indice) => {
-                checkBox.style.visibility = "visible";
-                checkBox.checked = false;
-            });
-
-            if(listaEliminar.length == 0){
-                botonEliminarOperacion.style.visibility = "hidden";
-                botonDeseleccionarOperacion.style.visibility = "hidden";
-                botonSeleccionarOperacion.style.visibility = "visible";
-            } else if(listaEliminar.length > 0){
-                botonEliminarOperacion.style.visibility = "visible";
-                botonDeseleccionarOperacion.style.visibility = "visible";
-                botonSeleccionarOperacion.style.visibility = "visible";
-
-            }
+            selectorModoSeleccion("activar");
+            
         });
 
         cardOperacion.addEventListener("click", (event) => {
@@ -302,7 +293,7 @@ function crearCardsHistorialOperaciones(){
             if(modoSeleccion === true){
                 if(checkBox.checked === false){
                     checkBox.checked = true;
-                    botonEliminarOperacion.style.visibility = "visible";
+                    botonEliminarOperacion.disabled = false;
                     listaEliminar.push(`${indice}`);
                 } else if(checkBox.checked === true){
                     checkBox.checked = false;
@@ -315,13 +306,13 @@ function crearCardsHistorialOperaciones(){
                 }
             
                 if(listaEliminar.length == 0){
-                    botonEliminarOperacion.style.visibility = "hidden";
-                    botonDeseleccionarOperacion.style.visibility = "hidden";
-                    botonSeleccionarOperacion.style.visibility = "visible";
+                    disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
                 } else if(listaEliminar.length > 0){
-                    botonEliminarOperacion.style.visibility = "visible";
-                    botonDeseleccionarOperacion.style.visibility = "visible";
-                    botonSeleccionarOperacion.style.visibility = "visible";
+                    disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
+
+                    if(operacionesIniciales.length === listaEliminar.length){
+                        botonSeleccionarOperacion.disabled = true;
+                    }
                 }
             }
         });
@@ -346,7 +337,7 @@ function cargarOperacionFormulario(tipoOperacion, par, distanciaPorcentajeRecomp
 //Comprueba las operaciones seleccionadas mediante los checkboxs, para hacer multiple eliminacion
 function comprobarOperacionesAEliminar(checkBox, listaEliminar, indice){
     if(checkBox.checked === true){
-        botonEliminarOperacion.style.visibility = "visible";
+        botonEliminarOperacion.disabled = false;
         listaEliminar.push(`${indice}`);
     } else if(checkBox.checked === false){
         let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
@@ -357,12 +348,15 @@ function comprobarOperacionesAEliminar(checkBox, listaEliminar, indice){
     }
 
     if(listaEliminar.length == 0){
-        botonEliminarOperacion.style.visibility = "hidden";
-        botonDeseleccionarOperacion.style.visibility = "hidden";
-        botonSeleccionarOperacion.style.visibility = "hidden";
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
+
     } else if(listaEliminar.length > 0){
-        botonDeseleccionarOperacion.style.visibility = "visible";
-        botonSeleccionarOperacion.style.visibility = "visible";
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
+
+        if(operacionesIniciales.length === listaEliminar.length){
+            botonSeleccionarOperacion.disabled = true;
+        }
+
     }
 }
 
@@ -394,19 +388,26 @@ function cambiarColorBoton(tipoOperacion, boton){
     }
 }
 
+
 function seleccionarOperacion(modoBoton){
 
+    if(listaEliminar.length == 0 || listaEliminar.length > 0){
+
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, true);
+
+        if(operacionesIniciales.length === listaEliminar.length){
+            botonSeleccionarOperacion.disabled = true;
+        }
+    } 
+        
     if(modoBoton === "seleccionar"){
         checkBoxs.forEach((checkBox, indice) => {
-            //let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;
 
             checkBox.checked = true;
             
             listaEliminar.push(`${indice}`);
         });
-
-        botonEliminarOperacion.style.visibility = "visible";
-        botonDeseleccionarOperacion.style.visibility = "visible";
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, true);
 
     } else if(modoBoton === "deseleccionar"){
         listaEliminar.forEach(indice => {
@@ -414,12 +415,57 @@ function seleccionarOperacion(modoBoton){
             checkBox.checked = false;
             listaEliminar = [];    
         });
-
-        botonEliminarOperacion.style.visibility = "hidden";
-        botonDeseleccionarOperacion.style.visibility = "hidden";
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
     }
 }
 
+
+/*************************************Modo Seleccion de operaciones*****************************************/
+//Activa o desactiva el modo Seleccion que es donde yo puedo elegir y eliminar varias operaciones a la vez
+function selectorModoSeleccion(modo = "activar"){
+    let visibilidad;
+    
+    if (modo == "activar"){
+        modoSeleccion = true;
+        visibilidad = "visible";
+
+        if (operacionesIniciales.length === 0) {
+            disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, true);
+
+        } else if (operacionesIniciales.length > 0) {
+            disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
+        }
+
+    } else if (modo == "desactivar"){
+        modoSeleccion = false;
+        visibilidad = "hidden";
+    }
+
+    checkBoxs.forEach((checkBox, indice) => {
+        checkBox.style.visibility = visibilidad;
+        checkBox.checked = false;
+    });
+
+    visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, visibilidad, visibilidad, visibilidad);
+}
+
+
+/************************************************************************************************************/
+//Funcion que solo aplica estilo para que los tres botones del modo Seleccion sean visibles o no
+function visibilidadBotones(btn1, btn2, btn3, visibilidadBtn1, visibilidadBtn2, visibilidadBtn3){
+    btn1.style.visibility = visibilidadBtn1;
+    btn2.style.visibility = visibilidadBtn2;
+    btn3.style.visibility = visibilidadBtn3;
+}
+
+
+/***********************************************************************************************************/
+//Funcion que solo habilita y deshabilita los botones del modo Seleccion
+function disponibilidadBotones(btn1, btn2, btn3, boolean1, boolean2, boolean3){
+    btn1.disabled = boolean1;
+    btn2.disabled = boolean2;
+    btn3.disabled = boolean3;
+}
 
 /*-------------------------------------------CODIGO-------------------------------------------*/
 

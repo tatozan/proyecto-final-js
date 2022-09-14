@@ -8,9 +8,7 @@ form.addEventListener("submit", (event) => {
     if(modoSeleccion === true){
         modoSeleccion = false;
         seleccionarOperacion("deseleccionar");    
-        botonEliminarOperacion.style.visibility = "hidden";
-        botonDeseleccionarOperacion.style.visibility = "hidden";
-        botonSeleccionarOperacion.style.visibility = "hidden";
+        visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden");
     }
 
     let uuid, tipoOperacion, par, distanciaPorcentajeRecompraReventa, aumentoPorcentajeRecompraReventa, sl, precioMoneda, cantidadMonedas;
@@ -180,6 +178,7 @@ botonEliminarOperacion.addEventListener("click", (event) => {
         confirmButtonText: 'Ok'
     }).then((result) => {
         if (result.isConfirmed) {
+
             listaEliminar.forEach((operacion, indice) => {
                 document.getElementById(`operacion${indice}`).remove();
             });
@@ -188,13 +187,7 @@ botonEliminarOperacion.addEventListener("click", (event) => {
 
             almacenarLocalStorage("operacionesIniciales", operacionesFiltradas);
 
-            botonEliminarOperacion.style.visibility = "hidden";
-            botonDeseleccionarOperacion.style.visibility = "hidden";
-            botonSeleccionarOperacion.style.visibility = "hidden";
-            
             listaEliminar = [];
-
-            crearCardsHistorialOperaciones();
 
             Swal.fire({
                 title: 'Borradas!',
@@ -203,10 +196,10 @@ botonEliminarOperacion.addEventListener("click", (event) => {
                 confirmButtonColor: '#5fb6ff',
                 confirmButtonText: 'Ok'
             });
+
+            crearCardsHistorialOperaciones();
         }
     });
-
-    modoSeleccion = false;
 });
 
 /********************************************************************************************************/
@@ -217,9 +210,12 @@ botonMostrarOperacionesIniciales.addEventListener("click", (event) => {
     if(modoSeleccion === true){
         modoSeleccion = false;
         seleccionarOperacion("deseleccionar");
-        botonEliminarOperacion.style.visibility = "hidden";
-        botonDeseleccionarOperacion.style.visibility = "hidden";
-        botonSeleccionarOperacion.style.visibility = "hidden";
+
+        if(operacionesIniciales.length == 0){
+            visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden")
+        }
+        
+        disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, true);
     }
 
     if (primerClick == true){
@@ -229,8 +225,10 @@ botonMostrarOperacionesIniciales.addEventListener("click", (event) => {
         crearCardsHistorialOperaciones();
     } else {
         primerClick = true;
-        botonMostrarOperacionesIniciales.style.background="#6c757d";
+        botonMostrarOperacionesIniciales.style.background="#6c757d";      
         divOperacionesIniciales.innerHTML = "";
+
+        visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden");
     }
 });
 
@@ -246,29 +244,21 @@ botonDeseleccionarOperacion.addEventListener("click", (event) => {
 //Boton que permite tildar todas las operaciones
 botonSeleccionarOperacion.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
+    
     seleccionarOperacion("seleccionar");
 });
-
 
 
 /********************************************************************************************************/
 //Cuando se clickea fuera, se sale del modo seleccion de cards
 divModoSeleccionOff.addEventListener("click", (event) => {
-
-    if (modoSeleccion === true){
-        checkBoxs.forEach((checkBox, indice) => {
-            checkBox.style.visibility = "hidden";
-            checkBox.checked = false;
-        });
-
-        botonDeseleccionarOperacion.style.visibility = "hidden";
-        botonSeleccionarOperacion.style.visibility = "hidden";
-        botonEliminarOperacion.style.visibility = "hidden";
-
-        modoSeleccion = false;
+    if(modoSeleccion == true){
+        selectorModoSeleccion("desactivar");
     }
 });
 
+
+/********************************************************************************************************/
 //solo evito que cuando de click en calcular no se active el evento click de divModoSeleccionOff
 botonCalcular.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
