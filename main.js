@@ -290,7 +290,32 @@ function crearCardsHistorialOperaciones() {
         cardOperacion.addEventListener("click", (event) => {
             event.stopImmediatePropagation();
 
-            gestorClickCards();
+            if (modoSeleccion === true) {
+                if (checkBox.checked === false) {
+                    checkBox.checked = true;
+                    botonEliminarOperacion.disabled = false;
+                    listaEliminar.push(`${indice}`);
+        
+                } else if (checkBox.checked === true) {
+                    checkBox.checked = false;
+        
+                    let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
+                    //se compara con -1 porque es una condicion de error del metodo indexOf, por si no encuentra el elemento buscado
+                    if (indice != -1) {
+                        listaEliminar.splice(indiceElementoAEliminar, 1);
+                    }
+                }
+        
+                if (listaEliminar.length == 0) {
+                    disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
+                } else if (listaEliminar.length > 0) {
+                    disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
+        
+                    if (operacionesIniciales.length === listaEliminar.length) {
+                        botonSeleccionarOperacion.disabled = true;
+                    }
+                }
+            }
         });
     });
 }
@@ -442,36 +467,7 @@ function disponibilidadBotones(btn1, btn2, btn3, boolean1, boolean2, boolean3) {
     btn3.disabled = boolean3;
 }
 
-/***********************************************************************************************************/
-//Gestiona las operaciones seleccionadas proximas a eliminar cuando clickeamos en el cuerpo de las cards
-function gestorClickCards(){
-    if (modoSeleccion === true) {
-        if (checkBox.checked === false) {
-            checkBox.checked = true;
-            botonEliminarOperacion.disabled = false;
-            listaEliminar.push(`${indice}`);
 
-        } else if (checkBox.checked === true) {
-            checkBox.checked = false;
-
-            let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
-            //se compara con -1 porque es una condicion de error del metodo indexOf, por si no encuentra el elemento buscado
-            if (indice != -1) {
-                listaEliminar.splice(indiceElementoAEliminar, 1);
-            }
-        }
-
-        if (listaEliminar.length == 0) {
-            disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
-        } else if (listaEliminar.length > 0) {
-            disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
-
-            if (operacionesIniciales.length === listaEliminar.length) {
-                botonSeleccionarOperacion.disabled = true;
-            }
-        }
-    }
-}
 /*-------------------------------------------CODIGO-------------------------------------------*/
 
 //obtencion elementos del dom
