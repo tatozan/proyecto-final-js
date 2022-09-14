@@ -129,6 +129,18 @@ p{
     background-color: #dbdddf;
 }
 
+#botonEliminarOperacion:hover{
+    background-color: #8277ff;
+}
+
+#botonDeseleccionarOperacion:hover{
+    background-color: #8277ff;
+}
+
+#botonSeleccionarOperacion:hover{
+    background-color: #8277ff;
+}
+
 .containerButtons{
     display: flex;
     justify-content: start;
