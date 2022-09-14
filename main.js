@@ -89,7 +89,12 @@ const obtenerListadoMonedas = async () => {
         });
     }
     catch (error) {
-        console.log(error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No pudo traerse el listado de monedas',
+            footer: `Debido a ${error}`
+          })
     }
 }
 
