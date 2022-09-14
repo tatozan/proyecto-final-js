@@ -1,15 +1,15 @@
 //activo popovers en todo el documento
 let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-  return new bootstrap.Popover(popoverTriggerEl);
+    return new bootstrap.Popover(popoverTriggerEl);
 });
 
 
 /*-------------------------------------------CLASES-------------------------------------------*/
 //declaro objeto operacion
-class Operacion{
+class Operacion {
     //constructor de la clase
-    constructor(id, numeroOperacion = 0, tipoOperacion, par = "predeterminado", distanciaPorcentajeRecompraReventa = 0, aumentoPorcentajeRecompraReventa = 0, sl, precioMoneda = 0, cantidadMonedas = 0, date="indeterminado", montoInvertido = 0){
+    constructor(id, numeroOperacion = 0, tipoOperacion, par = "predeterminado", distanciaPorcentajeRecompraReventa = 0, aumentoPorcentajeRecompraReventa = 0, sl, precioMoneda = 0, cantidadMonedas = 0, date = "indeterminado", montoInvertido = 0) {
         this.id = id;
         this.numeroOperacion = numeroOperacion;
         this.tipoOperacion = tipoOperacion;
@@ -24,11 +24,11 @@ class Operacion{
     }
 
     //metodos de la clase
-    calcularMontoInvertido(precioMoneda, cantidadMonedas){
+    calcularMontoInvertido(precioMoneda, cantidadMonedas) {
         this.montoInvertido = precioMoneda * cantidadMonedas;
     }
 
-    mostrarDatosOperacionInicial(){
+    mostrarDatosOperacionInicial() {
         const divDatosCompraInicial = document.getElementById('divDatosCompraInicial');
         divDatosCompraInicial.style.border = "1px solid #ddd";
         divDatosCompraInicial.innerHTML = "";
@@ -58,14 +58,14 @@ class Operacion{
 
 /**************************************almacenarLocalStorage*************************************/
 //Almacenar array de objetos en localStorage
-function almacenarLocalStorage(index, objectsArray){
+function almacenarLocalStorage(index, objectsArray) {
     localStorage.setItem(index, JSON.stringify(objectsArray));
 }
 
 
 /***************************************comprobarLocalStorage*****************************************/
 //comprobar si existe un array de objetos en un indice determinado, si existe lo devuelve, sino, crea un array de objetos vacio
-function comprobarLocalStorage(index){
+function comprobarLocalStorage(index) {
     //compruebo si esta creado mi localStorage, si no esta creado lo creo, y si esta, le envio las operaciones que tenia previamente
     return JSON.parse(localStorage.getItem(index)) ?? [];
 }
@@ -73,8 +73,8 @@ function comprobarLocalStorage(index){
 
 /**************************************obtenerListadoMonedas********************************************/
 //obtengo las monedas de la api de futuros de Binance
-const obtenerListadoMonedas = async() => {
-    try{
+const obtenerListadoMonedas = async () => {
+    try {
         const respuesta = await axios.get("https://www.binance.com/fapi/v1/exchangeInfo");
 
         par.innerHTML = "";
@@ -88,15 +88,15 @@ const obtenerListadoMonedas = async() => {
             `
         });
     }
-    catch(error){
+    catch (error) {
         console.log(error);
     }
-} 
+}
 
 
 /******************************************mostrarOperaciones***************************************/
 //Mostrar operaciones de recompra / reventa
-function mostrarOperaciones(operaciones, gridOperaciones){
+function mostrarOperaciones(operaciones, gridOperaciones) {
     let codigoHTMLTabla;
     gridOperaciones.innerHTML = "";
 
@@ -116,8 +116,8 @@ function mostrarOperaciones(operaciones, gridOperaciones){
     operaciones.forEach((operacion, indice) => {
 
         //no muestro operacion inicial, solo las recompras / reventas que es lo que me interesa para operar
-        if(indice != 0){
-            if(indice % 2 == 0){
+        if (indice != 0) {
+            if (indice % 2 == 0) {
                 codigoHTMLTabla += `
                     <tr class="table-light">
                         <th scope="row"> ${operacion.numeroOperacion} </th>
@@ -135,7 +135,7 @@ function mostrarOperaciones(operaciones, gridOperaciones){
                         <td>${operacion.cantidadMonedas.toFixed(3)}</td>
                         <td>$${operacion.montoInvertido.toFixed(2)}</td>
                     </tr>  
-                ` 
+                `
             }
         }
     });
@@ -150,7 +150,7 @@ function mostrarOperaciones(operaciones, gridOperaciones){
 
 /******************************************mostrarDatosFinales*****************************************/
 //Crea un acordion con datos adicionales al calculo de las operaciones
-function mostrarDatosFinales(porcentajeDistanciaSl, precioMonedaEnSl, cantidadMonedas, montoInvertido){
+function mostrarDatosFinales(porcentajeDistanciaSl, precioMonedaEnSl, cantidadMonedas, montoInvertido) {
     const divDatosFinales = document.getElementById('divDatosFinales');
     divDatosFinales.style.border = "1px solid #ddd";
     divDatosFinales.innerHTML = "";
@@ -175,7 +175,7 @@ function mostrarDatosFinales(porcentajeDistanciaSl, precioMonedaEnSl, cantidadMo
 //id="flexCheckDefault"
 /****************************************crearHTMLHistorialOperaciones*************************************/
 //Crear HTML de historial de operaciones, dado un div contenedor, y el array de objetos a mostrar
-function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
+function crearHTMLHistorialOperaciones(divContenedor, arrayObject) {
     divContenedor.innerHTML = "";
 
     arrayObject.forEach((operacion, indice) => {
@@ -194,24 +194,24 @@ function crearHTMLHistorialOperaciones(divContenedor, arrayObject){
                     <button type="button" class="btn btn-success"> <i class="fa-solid fa-book"></i> </button>
                 </div>
             </div>
-        `       
+        `
     });
 }
 
 
 /*************************************crearCardsHistorialOperaciones***********************************/
 //Crea el historial de operaciones
-function crearCardsHistorialOperaciones(){
+function crearCardsHistorialOperaciones() {
 
     const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
 
-    if(operacionesIniciales.length == 0){
-        
+    if (operacionesIniciales.length == 0) {
+
         visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden");
 
-    } else if(operacionesIniciales.length > 0 ){
+    } else if (operacionesIniciales.length > 0) {
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
-    } 
+    }
 
     selectorModoSeleccion("desactivar");
 
@@ -230,13 +230,13 @@ function crearCardsHistorialOperaciones(){
         operacionInicialDatos.addEventListener("click", (event) => {
             event.stopImmediatePropagation();
             cargarOperacionFormulario(
-                document.getElementById("tipoOperacion"), 
-                document.getElementById("par"), 
-                document.getElementById("distanciaPorcentajeRecompraReventa"), 
-                document.getElementById("aumentoPorcentajeRecompraReventa"), 
-                document.getElementById("sl"), 
-                document.getElementById("precioMoneda"), 
-                document.getElementById("cantidadMonedas"), 
+                document.getElementById("tipoOperacion"),
+                document.getElementById("par"),
+                document.getElementById("distanciaPorcentajeRecompraReventa"),
+                document.getElementById("aumentoPorcentajeRecompraReventa"),
+                document.getElementById("sl"),
+                document.getElementById("precioMoneda"),
+                document.getElementById("cantidadMonedas"),
                 operacion
             );
 
@@ -262,7 +262,7 @@ function crearCardsHistorialOperaciones(){
 
                     Swal.fire({
                         title: 'Borrada!',
-                        text:"La operación ha sido eliminada.",
+                        text: "La operación ha sido eliminada.",
                         icon: 'success',
                         confirmButtonColor: '#5fb6ff',
                         confirmButtonText: 'Ok'
@@ -270,13 +270,13 @@ function crearCardsHistorialOperaciones(){
 
                     crearCardsHistorialOperaciones();
                 }
-            });   
+            });
         });
 
         checkBox.addEventListener("click", (event) => {
             event.stopImmediatePropagation();
 
-            comprobarOperacionesAEliminar(checkBox, listaEliminar, indice);    
+            comprobarOperacionesAEliminar(checkBox, listaEliminar, indice);
         });
 
         //activa modo seleccion de operaciones para eliminarlas
@@ -284,37 +284,13 @@ function crearCardsHistorialOperaciones(){
             event.stopImmediatePropagation();
 
             selectorModoSeleccion("activar");
-            
+
         });
 
         cardOperacion.addEventListener("click", (event) => {
             event.stopImmediatePropagation();
 
-            if(modoSeleccion === true){
-                if(checkBox.checked === false){
-                    checkBox.checked = true;
-                    botonEliminarOperacion.disabled = false;
-                    listaEliminar.push(`${indice}`);
-                } else if(checkBox.checked === true){
-                    checkBox.checked = false;
-                    
-                    let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
-                    //se compara con -1 porque es una condicion de error del metodo indexOf, por si no encuentra el elemento buscado
-                    if(indice != -1){ 
-                        listaEliminar.splice(indiceElementoAEliminar, 1);
-                    }
-                }
-            
-                if(listaEliminar.length == 0){
-                    disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
-                } else if(listaEliminar.length > 0){
-                    disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
-
-                    if(operacionesIniciales.length === listaEliminar.length){
-                        botonSeleccionarOperacion.disabled = true;
-                    }
-                }
-            }
+            gestorClickCards();
         });
     });
 }
@@ -322,7 +298,7 @@ function crearCardsHistorialOperaciones(){
 
 /***********************************cargarOperacionFormulario*************************************/
 //Carga operaciones en el formulario, para luego poder recalcular los datos de esa operacion
-function cargarOperacionFormulario(tipoOperacion, par, distanciaPorcentajeRecompraReventa, aumentoPorcentajeRecompraReventa, sl, precioMoneda, cantidadMonedas, operationObject){
+function cargarOperacionFormulario(tipoOperacion, par, distanciaPorcentajeRecompraReventa, aumentoPorcentajeRecompraReventa, sl, precioMoneda, cantidadMonedas, operationObject) {
     tipoOperacion.value = operationObject.tipoOperacion;
     par.value = operationObject.par;
     distanciaPorcentajeRecompraReventa.value = operationObject.distanciaPorcentajeRecompraReventa;
@@ -335,25 +311,25 @@ function cargarOperacionFormulario(tipoOperacion, par, distanciaPorcentajeRecomp
 
 /**********************************comprobarOperacionesAEliminar***************************************/
 //Comprueba las operaciones seleccionadas mediante los checkboxs, para hacer multiple eliminacion
-function comprobarOperacionesAEliminar(checkBox, listaEliminar, indice){
-    if(checkBox.checked === true){
+function comprobarOperacionesAEliminar(checkBox, listaEliminar, indice) {
+    if (checkBox.checked === true) {
         botonEliminarOperacion.disabled = false;
         listaEliminar.push(`${indice}`);
-    } else if(checkBox.checked === false){
+    } else if (checkBox.checked === false) {
         let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
         //se compara con -1 porque es una condicion de error del metodo indexOf, por si no encuentra el elemento buscado
-        if(indice != -1){ 
+        if (indice != -1) {
             listaEliminar.splice(indiceElementoAEliminar, 1);
         }
     }
 
-    if(listaEliminar.length == 0){
+    if (listaEliminar.length == 0) {
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
 
-    } else if(listaEliminar.length > 0){
+    } else if (listaEliminar.length > 0) {
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
 
-        if(operacionesIniciales.length === listaEliminar.length){
+        if (operacionesIniciales.length === listaEliminar.length) {
             botonSeleccionarOperacion.disabled = true;
         }
 
@@ -363,7 +339,7 @@ function comprobarOperacionesAEliminar(checkBox, listaEliminar, indice){
 
 /***************************************eliminarOperacion***********************************/
 //Elimina operacion del dom, del array y finalmente del localStorage
-function eliminarOperacion(elementoDOM, indice, arrayObject){
+function eliminarOperacion(elementoDOM, indice, arrayObject) {
     document.getElementById(elementoDOM).remove();
 
     arrayObject.splice(indice, 1);
@@ -374,7 +350,7 @@ function eliminarOperacion(elementoDOM, indice, arrayObject){
 
 /*************************************cambiarColorBoton*****************************************/
 //Cambia el color del boton CALCULAR dependiendo del tipo de operacion
-function cambiarColorBoton(tipoOperacion, boton){
+function cambiarColorBoton(tipoOperacion, boton) {
     switch (tipoOperacion) {
         case "short":
             boton.style.background = "rgb(246, 70, 93)";
@@ -389,31 +365,30 @@ function cambiarColorBoton(tipoOperacion, boton){
 }
 
 
-function seleccionarOperacion(modoBoton){
+function seleccionarOperacion(modoBoton) {
 
-    if(listaEliminar.length == 0 || listaEliminar.length > 0){
+    if (listaEliminar.length == 0 || listaEliminar.length > 0) {
 
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, true);
 
-        if(operacionesIniciales.length === listaEliminar.length){
+        if (operacionesIniciales.length === listaEliminar.length) {
             botonSeleccionarOperacion.disabled = true;
         }
-    } 
-        
-    if(modoBoton === "seleccionar"){
-        checkBoxs.forEach((checkBox, indice) => {
+    }
 
+    if (modoBoton === "seleccionar") {
+        checkBoxs.forEach((checkBox, indice) => {
             checkBox.checked = true;
-            
+
             listaEliminar.push(`${indice}`);
         });
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, true);
 
-    } else if(modoBoton === "deseleccionar"){
+    } else if (modoBoton === "deseleccionar") {
         listaEliminar.forEach(indice => {
             let checkBox = document.getElementById(`operacion${indice}`).firstElementChild.firstElementChild;
             checkBox.checked = false;
-            listaEliminar = [];    
+            listaEliminar = [];
         });
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
     }
@@ -422,10 +397,10 @@ function seleccionarOperacion(modoBoton){
 
 /*************************************Modo Seleccion de operaciones*****************************************/
 //Activa o desactiva el modo Seleccion que es donde yo puedo elegir y eliminar varias operaciones a la vez
-function selectorModoSeleccion(modo = "activar"){
+function selectorModoSeleccion(modo = "activar") {
     let visibilidad;
-    
-    if (modo == "activar"){
+
+    if (modo == "activar") {
         modoSeleccion = true;
         visibilidad = "visible";
 
@@ -436,7 +411,7 @@ function selectorModoSeleccion(modo = "activar"){
             disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
         }
 
-    } else if (modo == "desactivar"){
+    } else if (modo == "desactivar") {
         modoSeleccion = false;
         visibilidad = "hidden";
     }
@@ -452,7 +427,7 @@ function selectorModoSeleccion(modo = "activar"){
 
 /************************************************************************************************************/
 //Funcion que solo aplica estilo para que los tres botones del modo Seleccion sean visibles o no
-function visibilidadBotones(btn1, btn2, btn3, visibilidadBtn1, visibilidadBtn2, visibilidadBtn3){
+function visibilidadBotones(btn1, btn2, btn3, visibilidadBtn1, visibilidadBtn2, visibilidadBtn3) {
     btn1.style.visibility = visibilidadBtn1;
     btn2.style.visibility = visibilidadBtn2;
     btn3.style.visibility = visibilidadBtn3;
@@ -461,12 +436,42 @@ function visibilidadBotones(btn1, btn2, btn3, visibilidadBtn1, visibilidadBtn2, 
 
 /***********************************************************************************************************/
 //Funcion que solo habilita y deshabilita los botones del modo Seleccion
-function disponibilidadBotones(btn1, btn2, btn3, boolean1, boolean2, boolean3){
+function disponibilidadBotones(btn1, btn2, btn3, boolean1, boolean2, boolean3) {
     btn1.disabled = boolean1;
     btn2.disabled = boolean2;
     btn3.disabled = boolean3;
 }
 
+/***********************************************************************************************************/
+//Gestiona las operaciones seleccionadas proximas a eliminar cuando clickeamos en el cuerpo de las cards
+function gestorClickCards(){
+    if (modoSeleccion === true) {
+        if (checkBox.checked === false) {
+            checkBox.checked = true;
+            botonEliminarOperacion.disabled = false;
+            listaEliminar.push(`${indice}`);
+
+        } else if (checkBox.checked === true) {
+            checkBox.checked = false;
+
+            let indiceElementoAEliminar = listaEliminar.indexOf(`${indice}`);
+            //se compara con -1 porque es una condicion de error del metodo indexOf, por si no encuentra el elemento buscado
+            if (indice != -1) {
+                listaEliminar.splice(indiceElementoAEliminar, 1);
+            }
+        }
+
+        if (listaEliminar.length == 0) {
+            disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, false);
+        } else if (listaEliminar.length > 0) {
+            disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, false, false, false);
+
+            if (operacionesIniciales.length === listaEliminar.length) {
+                botonSeleccionarOperacion.disabled = true;
+            }
+        }
+    }
+}
 /*-------------------------------------------CODIGO-------------------------------------------*/
 
 //obtencion elementos del dom

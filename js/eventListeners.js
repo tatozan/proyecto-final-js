@@ -5,9 +5,9 @@ form.addEventListener("submit", (event) => {
     event.stopImmediatePropagation();
     event.preventDefault();
 
-    if(modoSeleccion === true){
+    if (modoSeleccion === true) {
         modoSeleccion = false;
-        seleccionarOperacion("deseleccionar");    
+        seleccionarOperacion("deseleccionar");
         visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden");
     }
 
@@ -23,7 +23,7 @@ form.addEventListener("submit", (event) => {
     precioMoneda = parseFloat(dataForm.get("precioMonedaName"));
     cantidadMonedas = parseFloat(dataForm.get("cantidadMonedasName"));
 
-    if((distanciaPorcentajeRecompraReventa && aumentoPorcentajeRecompraReventa && sl && precioMoneda && cantidadMonedas) > 0){
+    if ((distanciaPorcentajeRecompraReventa && aumentoPorcentajeRecompraReventa && sl && precioMoneda && cantidadMonedas) > 0) {
 
         const operacionesIniciales = comprobarLocalStorage("operacionesIniciales");
 
@@ -36,7 +36,7 @@ form.addEventListener("submit", (event) => {
         const date = new Date().toLocaleString();
 
         const divDatosCompraInicial = document.getElementById("divDatosCompraInicial");
-        divDatosCompraInicial.innerHTML ="";
+        divDatosCompraInicial.innerHTML = "";
 
         const gridOperaciones = document.getElementById("gridOperaciones");
         gridOperaciones.innerHTML = "";
@@ -54,14 +54,14 @@ form.addEventListener("submit", (event) => {
         let i = 0;
         let pnl = 0;
 
-        if(operaciones[0].tipoOperacion === "short" || operaciones[0].tipoOperacion === "long"){
+        if (operaciones[0].tipoOperacion === "short" || operaciones[0].tipoOperacion === "long") {
 
-            do{
-                i += 1; 
+            do {
+                i += 1;
 
                 //creo una variable nroOperacion y nroOperacionAnterior para que sea mas legible
                 let nroOperacion = i;
-                let nroOperacionAnterior = i-1;
+                let nroOperacionAnterior = i - 1;
                 let nroOperacionProm = i;
 
                 //datos Recompras
@@ -73,26 +73,26 @@ form.addEventListener("submit", (event) => {
                 let cantidadMonedasProm;
                 let precioMonedaProm;
                 let inversionProm;
-                
-                if(i === 1){
+
+                if (i === 1) {
                     pnl = calcularPnL(operaciones[0].cantidadMonedas, operaciones[nroOperacionAnterior].precioMoneda, precioMoneda, operaciones[0].tipoOperacion);
                 } else {
                     nroOperacionProm = nroOperacionAnterior - 1;
                     pnl = calcularPnL(operacionesProm[nroOperacionProm].cantidadMonedas, operacionesProm[nroOperacionProm].precioMoneda, precioMoneda, operaciones[0].tipoOperacion);
                 }
 
-                if(pnl <= operaciones[0].sl){
+                if (pnl <= operaciones[0].sl) {
 
                     uuid = self.crypto.randomUUID();
 
-                    const operacion = new Operacion(uuid, nroOperacion, operaciones[0].tipoOperacion, par, operaciones[0].distanciaPorcentajeRecompraReventa, operaciones[0].aumentoPorcentajeRecompraReventa, operaciones[0].sl, precioMoneda, cantidadMonedas, date, inversion);    
+                    const operacion = new Operacion(uuid, nroOperacion, operaciones[0].tipoOperacion, par, operaciones[0].distanciaPorcentajeRecompraReventa, operaciones[0].aumentoPorcentajeRecompraReventa, operaciones[0].sl, precioMoneda, cantidadMonedas, date, inversion);
                     operaciones.push(operacion);
 
-                    if(i === 1){
+                    if (i === 1) {
                         precioMonedaProm = (operaciones[nroOperacionAnterior].montoInvertido + operaciones[nroOperacion].montoInvertido) / (operaciones[nroOperacionAnterior].cantidadMonedas + operaciones[nroOperacion].cantidadMonedas);
                         cantidadMonedasProm = operaciones[nroOperacionAnterior].cantidadMonedas + operaciones[nroOperacion].cantidadMonedas;
 
-                    } else{
+                    } else {
                         precioMonedaProm = (operacionesProm[nroOperacionProm].montoInvertido + operaciones[nroOperacion].montoInvertido) / (operacionesProm[nroOperacionProm].cantidadMonedas + operaciones[nroOperacion].cantidadMonedas);
                         cantidadMonedasProm = operacionesProm[nroOperacionProm].cantidadMonedas + operaciones[nroOperacion].cantidadMonedas;
                     }
@@ -104,22 +104,22 @@ form.addEventListener("submit", (event) => {
                     const operacionProm = new Operacion(uuid, nroOperacion, operaciones[0].tipoOperacion, par, operaciones[0].distanciaPorcentajeRecompraReventa, operaciones[0].aumentoPorcentajeRecompraReventa, operaciones[0].sl, precioMonedaProm, cantidadMonedasProm, date, inversionProm);
                     operacionesProm.push(operacionProm);
                 }
-            //La calculadora no permite mas que calcular 8 recompras, mas recompras, no se recomienda          
-            } while(pnl <= operaciones[0].sl && i < 8);      
-            
+                //La calculadora no permite mas que calcular 8 recompras, mas recompras, no se recomienda          
+            } while (pnl <= operaciones[0].sl && i < 8);
+
             //Si i = 1 quiere decir que pnl excede el sl, por lo tanto no podemos hacer ninguna recompra
-            if(i === 1){
+            if (i === 1) {
                 Swal.fire({
                     icon: 'error',
                     title: 'SL insuficiente',
                     text: 'Aumente SL, no puede realizarse ninguna recompra.',
                     confirmButtonColor: '#98a0ff',
-                  });
+                });
 
             } else {
 
                 operacionesIniciales.push(operacion0);
-            
+
                 almacenarLocalStorage("operacionesIniciales", operacionesIniciales);
 
                 //extraigo la ultima operacion del arreglo
@@ -156,7 +156,7 @@ tipoOperacion.addEventListener("click", (event) => {
 //Cada vez que doy al boton reset, se cambia el color del boton calcular por defecto
 botonReset.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
-    tipoOperacion.value="";
+    tipoOperacion.value = "";
     cambiarColorBoton(tipoOperacion.value, botonCalcular);
 
 });
@@ -183,7 +183,7 @@ botonEliminarOperacion.addEventListener("click", (event) => {
                 document.getElementById(`operacion${indice}`).remove();
             });
 
-            const operacionesFiltradas = operacionesIniciales.filter( (operacion, indice) => !listaEliminar.includes(indice.toString()));
+            const operacionesFiltradas = operacionesIniciales.filter((operacion, indice) => !listaEliminar.includes(indice.toString()));
 
             almacenarLocalStorage("operacionesIniciales", operacionesFiltradas);
 
@@ -191,7 +191,7 @@ botonEliminarOperacion.addEventListener("click", (event) => {
 
             Swal.fire({
                 title: 'Borradas!',
-                text:"Las operaciones han sido eliminadas.",
+                text: "Las operaciones han sido eliminadas.",
                 icon: 'success',
                 confirmButtonColor: '#5fb6ff',
                 confirmButtonText: 'Ok'
@@ -207,25 +207,25 @@ botonEliminarOperacion.addEventListener("click", (event) => {
 let primerClick = true;
 botonMostrarOperacionesIniciales.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
-    if(modoSeleccion === true){
+    if (modoSeleccion === true) {
         modoSeleccion = false;
         seleccionarOperacion("deseleccionar");
 
-        if(operacionesIniciales.length == 0){
+        if (operacionesIniciales.length == 0) {
             visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden")
         }
-        
+
         disponibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, true, true, true);
     }
 
-    if (primerClick == true){
+    if (primerClick == true) {
         primerClick = false;
-        botonMostrarOperacionesIniciales.style.background="#5fb6ff";
-    
+        botonMostrarOperacionesIniciales.style.background = "#5fb6ff";
+
         crearCardsHistorialOperaciones();
     } else {
         primerClick = true;
-        botonMostrarOperacionesIniciales.style.background="#6c757d";      
+        botonMostrarOperacionesIniciales.style.background = "#6c757d";
         divOperacionesIniciales.innerHTML = "";
 
         visibilidadBotones(botonEliminarOperacion, botonDeseleccionarOperacion, botonSeleccionarOperacion, "hidden", "hidden", "hidden");
@@ -244,7 +244,7 @@ botonDeseleccionarOperacion.addEventListener("click", (event) => {
 //Boton que permite tildar todas las operaciones
 botonSeleccionarOperacion.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
-    
+
     seleccionarOperacion("seleccionar");
 });
 
@@ -252,7 +252,7 @@ botonSeleccionarOperacion.addEventListener("click", (event) => {
 /********************************************************************************************************/
 //Cuando se clickea fuera, se sale del modo seleccion de cards
 divModoSeleccionOff.addEventListener("click", (event) => {
-    if(modoSeleccion == true){
+    if (modoSeleccion == true) {
         selectorModoSeleccion("desactivar");
     }
 });
