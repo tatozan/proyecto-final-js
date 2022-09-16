@@ -8,9 +8,9 @@ Arroja una determinada cantidad de recompras (máximo 8) en base a unos valores 
 - **Moneda a operar:** par en la cual vamos a operar.  
 - **Distancia entre cada recompra:** distancia respecto al precio anterior medido en porcentaje entre cada recompra.  
 - **Aumento de inversión entre cada recompra:** aumento de inversión medido en porcentaje entre cada recompra.  
-- **Stop Loss:** Cantidad total medido en USDT que estoy dispuesto a perder si va en contra la operación.  
-- **Precio moneda:** Precio de la moneda al entrar a la operación.  
-- **Cantidad de monedas:** Cantidad de monedas al entrar a la operación.  
+- **Stop Loss:** cantidad total medido en USDT que estoy dispuesto a perder si va en contra la operación.  
+- **Precio moneda:** precio de la moneda al entrar a la operación.  
+- **Cantidad de monedas:** cantidad de monedas al entrar a la operación.  
 
 ### **HISTORIAL DE OPERACIONES:**   
 Listado de operaciones iniciales de la cual derivan las recompras. Contiene:
