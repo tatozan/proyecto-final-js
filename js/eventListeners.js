@@ -264,3 +264,10 @@ botonCalcular.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
 });
 
+
+/********************************************************************************************************/
+//solo evito que cuando de click en algunos de los botones que estan deshabilitados en el modo seleccion, se salga de ese modo
+contenedorBotones.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
+});
+

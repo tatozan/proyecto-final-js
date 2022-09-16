@@ -463,7 +463,7 @@ function visibilidadBotones(btn1, btn2, btn3, visibilidadBtn1, visibilidadBtn2, 
     btn3.style.visibility = visibilidadBtn3;
 }
 
-
+/*
 /***********************************************************************************************************/
 //Funcion que solo habilita y deshabilita los botones del modo Seleccion
 function disponibilidadBotones(btn1, btn2, btn3, boolean1, boolean2, boolean3) {
@@ -471,6 +471,7 @@ function disponibilidadBotones(btn1, btn2, btn3, boolean1, boolean2, boolean3) {
     btn2.disabled = boolean2;
     btn3.disabled = boolean3;
 }
+
 
 
 /*-------------------------------------------CODIGO-------------------------------------------*/
@@ -489,6 +490,7 @@ const botonEliminarOperacion = document.getElementById("botonEliminarOperacion")
 const botonDeseleccionarOperacion = document.getElementById("botonDeseleccionarOperacion");
 const botonSeleccionarOperacion = document.getElementById("botonSeleccionarOperacion");
 const divModoSeleccionOff = document.getElementById("divModoSeleccionOff");
+const contenedorBotones = document.getElementById("contenedorBotones");
 
 let checkBoxs = [];
 let listaEliminar = [];
